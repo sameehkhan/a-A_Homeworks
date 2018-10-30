@@ -66,6 +66,12 @@ class Board
   end
 
   def winner
-    raise :draw if @cups[6].size == 6 && @cups[13].size == 6
+    if @cups[6].size > @cups[13].size
+      return @name1
+    elsif @cups[6].size < @cups[13].size
+      return @name2
+    else
+      return :draw
+    end
   end
 end
