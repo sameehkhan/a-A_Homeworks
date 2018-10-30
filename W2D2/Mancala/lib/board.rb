@@ -4,16 +4,42 @@ class Board
   def initialize(name1, name2)
     @name1 = name1
     @name2 = name2
+    @cups = Array.new(14) {Array.new}
+    place_stones
   end
 
   def place_stones
-    # helper method to #initialize every non-store cup with four stones each
+    @cups.each_index do |i|
+      @cups[i].push(:stone,:stone,:stone,:stone) if i != 6 && i != 13
+    end
   end
 
   def valid_move?(start_pos)
+    raise "Invalid starting cup" if start_pos > 14
+    raise "Starting cup is empty" if @cups[start_pos].empty?
   end
 
   def make_move(start_pos, current_player_name)
+   # empties cup
+   stones = @cups[start_pos]
+   @cups[start_pos] = []
+
+   # distributes stones
+   cup_idx = start_pos
+   until stones.empty?
+     cup_idx += 1
+     cup_idx = 0 if cup_idx > 13
+     # places stones in the correct current player's cups
+     if cup_idx == 6
+       @cups[6] << stones.pop if current_player_name == @name1
+     elsif cup_idx == 13
+       @cups[13] << stones.pop if current_player_name == @name2
+     else
+       @cups[cup_idx] << stones.pop
+     end
+   end
+  render
+  next_turn(cup_idx)
   end
 
   def next_turn(ending_cup_idx)
